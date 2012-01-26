@@ -4,44 +4,15 @@ define("REPOSITORY_DIRS",dirname(__DIR__) . "/repos/");
 
 $app = new Silex\Application();
 $app['debug'] = true;
+$app['autoloader']->registerNamespace("Kokuban",dirname(__DIR__));
 
-$app->get("/", function(){
-		$data = <<<EOF
-		<html>
-		<link rel="stylesheet" href="/assets/bootstrap.min.css">
-		<link rel="stylesheet" href="/assets/bootstrap-responsive.css">
-                <style type="text/css">
-body{
-  position: relative;
-  padding-top: 90px;
-}
-		</style>
-		<body>
-    <div class="navbar navbar-fixed">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="brand" href="/">kokuban</a>
-        </div>
-      </div>
-    </div>
-    <div class="container">
-      <div class="overview">
-		<form method="POST" class="well" action="/new">
-		  description:
-		  <input type="text" value="" name="description" class="span4" /><br />
-		name: <input type="text" value="" name="name" class="span4" /><br />
-		<textarea name="contents" class="span10" style="height:20em;"></textarea>
-                <div class="form-actions">
-                <button type="submit" class="btn primary">Create</button>
-                </div>
-		</form>
-      </div>
-    </div>
-</body>
-</html>
-EOF;
+$app->register(new SIlex\Provider\TwigServiceProvider(), array(
+    'twig.path'       => dirnmae(__DIR__) . "/templates",
+    'twig.class_path' => dirname(__DIR__) . "vendors/twig/lib"
+));
 
-echo $data;
+$app->get("/", function(Silex\Application $app){
+    return new Symfony\Component\HttpFoundation\Response($app['twig']->render('index.htm',array()));
 });
 
 $app->post("/new", function(){
