@@ -1,6 +1,6 @@
 <?php
 require "silex.phar";
-define("REPOSITORY_DIRS","/home/chobie/kokuban/repos/");
+define("REPOSITORY_DIRS",dirname(__DIR__) . "repos/");
 
 $app = new Silex\Application();
 $app['debug'] = true;

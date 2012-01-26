@@ -12,6 +12,12 @@ script "install_kokuban" do
   user "vagrant"
   cwd "/home/vagrant"
   code <<-EOH
-    git clone https://github.com/chobie/kokuban.git
+    if [ -d "kokuban" ];
+    then
+      cd kokuban
+      git pull
+    else
+      git clone https://github.com/chobie/kokuban.git
+    fi
   EOH
 end

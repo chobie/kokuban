@@ -1,6 +1,6 @@
 <VirtualHost *>
   ServerName kokuban
-  DocumentRoot /home/vagrant/kokuban/
+  DocumentRoot /home/vagrant/kokuban/public
   
   ErrorLog ${APACHE_LOG_DIR}/kokuban.error.log
   CustomLog ${APACHE_LOG_DIR}/kokuban.access.log combined
