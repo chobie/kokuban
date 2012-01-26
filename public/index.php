@@ -1,6 +1,6 @@
 <?php
 require "silex.phar";
-define("REPOSITORY_DIRS",dirname(__DIR__) . "repos/");
+define("REPOSITORY_DIRS",dirname(__DIR__) . "/repos/");
 
 $app = new Silex\Application();
 $app['debug'] = true;
@@ -8,16 +8,37 @@ $app['debug'] = true;
 $app->get("/", function(){
 		$data = <<<EOF
 		<html>
-		<link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
+		<link rel="stylesheet" href="/assets/bootstrap.min.css">
+		<link rel="stylesheet" href="/assets/bootstrap-responsive.css">
+                <style type="text/css">
+body{
+  position: relative;
+  padding-top: 90px;
+}
+		</style>
 		<body>
-		<form method="POST" class="form-stacked" action="/new">
-		description: <input type="text" value="" name="description" /><br />
-		name: <input type="text" value="" name="name" /><br />
+    <div class="navbar navbar-fixed">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">kokuban</a>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="overview">
+		<form method="POST" class="well" action="/new">
+		  description:
+		  <input type="text" value="" name="description" class="span4" /><br />
+		name: <input type="text" value="" name="name" class="span4" /><br />
 		<textarea name="contents" class="span10" style="height:20em;"></textarea>
-		<input type="submit" value="create" />
+                <div class="form-actions">
+                <button type="submit" class="btn primary">Create</button>
+                </div>
 		</form>
-		</body>
-		</html>
+      </div>
+    </div>
+</body>
+</html>
 EOF;
 
 echo $data;
