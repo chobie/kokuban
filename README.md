@@ -2,7 +2,20 @@
 
 php-git2 Example Application - Kokuban is yet another implementation of Gist -
 
-# Install
+# Auto Install
+
+````
+gem install vagrant --no-ri --no-rdoc
+gem install chef --no-ri --no-rdoc
+
+git clone https://github.com/chobie/kokuban.git
+cd kokuban
+vagrant up
+# this may take 30 minutes over if you don't have the box.
+# go to http://localhost:8081/ when install finished.
+````
+
+# Manual Install
  
 ````
 git clone https://github.com/libgit2/libgit2.git
@@ -33,6 +46,7 @@ git clone https://github.com/chobie/kokuban.git
 
 * create git
 * http smart protocal
+(git clone http://hostname/<id>.git)
 
 will be add...
 

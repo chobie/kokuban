@@ -1,0 +1,7 @@
+<VirtualHost *>
+  ServerName kokuban
+  DocumentRoot /home/vagrant/kokuban/
+  
+  ErrorLog ${APACHE_LOG_DIR}/kokuban.error.log
+  CustomLog ${APACHE_LOG_DIR}/kokuban.access.log combined
+</VirtualHost>
