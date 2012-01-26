@@ -1,14 +1,14 @@
 <?php
-require "silex.phar";
+//require "silex.phar";
+require dirname(__DIR__) . "/vendors/silex/autoload.php";
 define("REPOSITORY_DIRS",dirname(__DIR__) . "/repos/");
 
 $app = new Silex\Application();
 $app['debug'] = true;
 $app['autoloader']->registerNamespace("Kokuban",dirname(__DIR__));
-
-$app->register(new SIlex\Provider\TwigServiceProvider(), array(
-    'twig.path'       => dirnmae(__DIR__) . "/templates",
-    'twig.class_path' => dirname(__DIR__) . "vendors/twig/lib"
+$app->register(new Silex\Provider\TwigServiceProvider(), array(
+    'twig.path'       => dirname(__DIR__) . "/templates",
+    'twig.class_path' => dirname(__DIR__) . "/vendors/twig/lib"
 ));
 
 $app->get("/", function(Silex\Application $app){
