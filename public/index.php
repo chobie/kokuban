@@ -89,9 +89,6 @@ $app->match("/{repo}/{task}",function($repo,$task){
 				break;
 
 			case "git-receive-pack":
-				header("HTTP/1.0 405 Method Not Allowed");
-				exit;
-
 				$input = file_get_contents("php://input");
 				header("Content-type: application/x-git-receive-pack-result");
 				$input = gzBody($input);
