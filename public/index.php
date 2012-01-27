@@ -1,6 +1,6 @@
 <?php
-//require "silex.phar";
-require dirname(__DIR__) . "/vendors/silex/autoload.php";
+require "silex.phar";
+//require dirname(__DIR__) . "/vendors/silex/autoload.php";
 define("REPOSITORY_DIRS",dirname(__DIR__) . "/repos/");
 
 $app = new Silex\Application();
