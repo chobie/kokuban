@@ -5,22 +5,33 @@ define("REPOSITORY_DIRS",dirname(__DIR__) . "/repos/");
 
 $app = new Silex\Application();
 $app['debug'] = true;
+$app['redis'] = new Redis();
+$app['redis']->connect("localhost");
+
+
 $app['autoloader']->registerNamespace("Kokuban",dirname(__DIR__));
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path'       => dirname(__DIR__) . "/templates",
     'twig.class_path' => dirname(__DIR__) . "/vendors/twig/lib"
 ));
 
+
 $app->get("/", function(Silex\Application $app){
-    return new Symfony\Component\HttpFoundation\Response($app['twig']->render('index.htm',array()));
+    $tmp = $app['redis']->lrange('kokuban.list',0,10);
+    $list = array();
+    foreach($tmp as $offset => $value) {
+      $list[$value] = unserialize($app['redis']->get($value));
+    }
+
+    return new Symfony\Component\HttpFoundation\Response($app['twig']->render('index.htm',array('list'=>$list)));
 });
 
-$app->post("/new", function(){
+$app->post("/new", function(Silex\Application $app){
 		$description = $_REQUEST['description'];
 		$name = $_REQUEST['name'];
 		$contents = $_REQUEST['contents'];
 
-		$seed = time();
+		$seed =  strtr(microtime(true),array("."=>""));
 		$repo = Git2\Repository::init(REPOSITORY_DIRS . $seed . ".git");
 		$oid = $repo->write($contents, 3);
 
@@ -44,7 +55,9 @@ $app->post("/new", function(){
 					"tree" => $toid,
 					"parents" => array()
 					));
-
+		$entity = new Kokuban\Entity($seed);
+                $app['redis']->set($seed,serialize($entity));
+                $app['redis']->lpush('kokuban.list',$seed);
 		echo "{$seed}.git was successfully created";
 });
 
@@ -164,6 +177,23 @@ $app->match("/{repo}/{task}",function($repo,$task){
 		}
 	}
 )->assert('task','.+');
+$app->get("/{id}",function(Silex\Application $app){
+    $repo = new Git2\Repository(REPOSITORY_DIRS . $app['request']->get('id').".git");
+    $head = Git2\Reference::lookup($repo,"refs/heads/master");
+    $head = $head->resolve();
+    $walker = new Git2\Walker($repo);
+    $walker->push($head->getTarget());
+    $revs = array();
+    $i = 0;
+    foreach($walker as $entry){
+      if($i>20) break;
+      $revs[] = $entry;
+      if($i==0) $h = $entry;
+      $i++;
+    }
+    
+    return new Symfony\Component\HttpFoundation\Response($app['twig']->render('detail.htm',array("revisions"=>$revs)));
+})->assert('id','\d+');
 
 function gzBody($gzData){ 
 	if(substr($gzData,0,3)=="\x1f\x8b\x08"){ 

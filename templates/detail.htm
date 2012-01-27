@@ -18,8 +18,8 @@ padding-top: 90px;
   <div class="fluid-container sidebar-right">
   <div class="fluid-sidebar">
     <ul class="nav list">
-      <li class="nav-header">kokuban</li>
-      {% for item in list%}<li><a href="/{{item.id}}">kokuban:{{item.id}}.git</a><i class="icon time"></i>created {{item.registered_at|date('Y-m-d H:i:s')}}</li>{% endfor %}
+      <li class="nav-header">revisions</li>
+      {% for commit in revisions %}<li>{{commit.getMessage()}}</li>{% endfor %}
     </ul>
   </div>
   <div class="fluid-content">
@@ -30,7 +30,7 @@ padding-top: 90px;
 name: <input type="text" value="" name="name" class="span4" /><br />
 <textarea name="contents" class="span10" style="height:20em;"></textarea>
 			  <div class="form-actions">
-			  <button type="submit" class="btn primary">Create</button>
+			  <button type="submit" class="btn primary">Update</button>
 			  </div>
 </form>
 	</div>
