@@ -192,7 +192,7 @@ $app->get("/{id}",function(Silex\Application $app){
       $i++;
     }
     
-    return new Symfony\Component\HttpFoundation\Response($app['twig']->render('detail.htm',array("revisions"=>$revs)));
+    return new Symfony\Component\HttpFoundation\Response($app['twig']->render('detail.htm',array("revisions"=>$revs,'id'=>$app['request']->get('id'))));
 })->assert('id','\d+');
 
 function gzBody($gzData){ 
