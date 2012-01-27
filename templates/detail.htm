@@ -19,20 +19,25 @@ padding-top: 90px;
   <div class="fluid-sidebar">
     <ul class="nav list">
       <li class="nav-header">revisions</li>
-      {% for commit in revisions %}<li>{{commit.getMessage()}}</li>{% endfor %}
+      {% for commit in revisions %}<li><a href="/{{id}}/{{commit.getOid}}">{{commit.getOid()}}</a></li>{% endfor %}
     </ul>
   </div>
   <div class="fluid-content">
 	<div class="overview">
         <div>
           <div>kokuban: {{id}}</div>
-          <div>http://localhost:8081/{{id}}.git</div>
+          <div>clone: <input class="span4" type="text" value="http://localhost:8081/{{id}}.git" /></div>
         </div>
-<form method="POST" class="well" action="/new">
+<form method="POST" class="well" action="/">
+  <div>
+{% for t in tree %}
   description:
   <input type="text" value="" name="description" class="span4" /><br />
-name: <input type="text" value="" name="name" class="span4" /><br />
-<textarea name="contents" class="span10" style="height:20em;"></textarea>
+name: <input type="text" value="{{t.entry.name}}" name="name" class="span4" /><br />
+<textarea name="contents" class="span10" style="height:20em;">{{t.object.getContent}}</textarea>
+
+  </div>
+{% endfor %}
 			  <div class="form-actions">
 			  <button type="submit" class="btn primary">Update</button>
 			  </div>

@@ -191,8 +191,16 @@ $app->get("/{id}",function(Silex\Application $app){
       if($i==0) $h = $entry;
       $i++;
     }
+    $tmp_tree = $h->getTree();
+    $tree = array();
+    foreach($tmp_tree as $t){
+      $tree[] = array(
+        "entry" => $t,
+        "object" => $repo->lookup($t->oid),
+      );
+    }
     
-    return new Symfony\Component\HttpFoundation\Response($app['twig']->render('detail.htm',array("revisions"=>$revs,'id'=>$app['request']->get('id'))));
+    return new Symfony\Component\HttpFoundation\Response($app['twig']->render('detail.htm',array("revisions"=>$revs,'id'=>$app['request']->get('id'),"tree"=>$tree)));
 })->assert('id','\d+');
 
 function gzBody($gzData){ 
