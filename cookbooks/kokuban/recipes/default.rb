@@ -24,5 +24,6 @@ script "install_kokuban" do
       git submodule init
       git submodule update
     fi
+    chmod 777 -R /home/vagrant/kokuban/repos/
   EOH
 end
