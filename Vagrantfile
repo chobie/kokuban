@@ -13,6 +13,8 @@ Vagrant::Config.run do |config|
     chef.add_recipe "git"
     chef.add_recipe "libgit2"
     chef.add_recipe "php-git2"
+    chef.add_recipe "redis"
+    chef.add_recipe "phpredis"
     chef.add_recipe "kokuban"
     chef.add_recipe "finalize"
 	 

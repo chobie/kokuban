@@ -1,40 +1,41 @@
 <html>
 <link rel="stylesheet" href="/assets/bootstrap.min.css">
 <link rel="stylesheet" href="/assets/bootstrap-responsive.css">
-			  <style type="text/css">
+<style type="text/css">
 body{
-position: relative;
-padding-top: 90px;
+    position: relative;
+    padding-top: 90px;
 }
 </style>
 <body>
-  <div class="navbar navbar-fixed">
-	<div class="navbar-inner">
-	  <div class="container">
-		<a class="brand" href="/">kokuban</a>
-	  </div>
-	</div>
-  </div>
+    <div class="navbar navbar-fixed">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="/">kokuban</a>
+            </div>
+        </div>
+    </div>
+
   <div class="fluid-container sidebar-right">
-  <div class="fluid-sidebar">
-    <ul class="nav list">
-      <li class="nav-header">kokuban</li>
-      {% for item in list%}<li><a href="/{{item.id}}">kokuban:{{item.id}}.git</a><i class="icon time"></i>created {{item.registered_at|date('Y-m-d H:i:s')}}</li>{% endfor %}
-    </ul>
-  </div>
-  <div class="fluid-content">
-	<div class="overview">
-<form method="POST" class="well" action="/new">
-  description:
-  <input type="text" value="" name="description" class="span4" /><br />
-name: <input type="text" value="" name="name" class="span4" /><br />
-<textarea name="contents" class="span10" style="height:20em;"></textarea>
-			  <div class="form-actions">
-			  <button type="submit" class="btn primary">Create</button>
-			  </div>
-</form>
-	</div>
-  </div>
+    <div class="fluid-sidebar">
+        <ul class="nav list">
+        <li class="nav-header">kokuban</li>
+        {% for item in list%}<li><a href="/{{item.id}}">kokuban:{{item.id}}.git</a><i class="icon time"></i>created {{item.registered_at|date('Y-m-d H:i:s')}}</li>{% endfor %}
+        </ul>
+    </div>
+
+    <div class="fluid-content">
+        <div class="overview">
+        <form method="POST" class="well" action="/new">
+            description: <input type="text" value="" name="description" class="span4" /><br />
+            name: <input type="text" value="" name="name" class="span4" /><br />
+            <textarea name="contents" class="span10" style="height:20em;"></textarea>
+            <div class="form-actions">
+                <button type="submit" class="btn primary">Create</button>
+            </div>
+        </form>
+        </div>
+    </div>
   </div>
 </body>
 </html>

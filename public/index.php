@@ -1,29 +1,15 @@
 <?php
-require "silex.phar";
-//require dirname(__DIR__) . "/vendors/silex/autoload.php";
-define("REPOSITORY_DIRS",dirname(__DIR__) . "/repos/");
-
-$app = new Silex\Application();
-$app['debug'] = true;
-$app['redis'] = new Redis();
-$app['redis']->connect("localhost");
-
-
-$app['autoloader']->registerNamespace("Kokuban",dirname(__DIR__));
-$app->register(new Silex\Provider\TwigServiceProvider(), array(
-    'twig.path'       => dirname(__DIR__) . "/templates",
-    'twig.class_path' => dirname(__DIR__) . "/vendors/twig/lib"
-));
+require dirname(__DIR__) . "/config.php";
 
 
 $app->get("/", function(Silex\Application $app){
-    $tmp = $app['redis']->lrange('kokuban.list',0,10);
-    $list = array();
-    foreach($tmp as $offset => $value) {
-      $list[$value] = unserialize($app['redis']->get($value));
-    }
+	$tmp = $app['redis']->lrange('kokuban.list',0,10);
+	$list = array();
+	foreach($tmp as $offset => $value) {
+	  $list[$value] = unserialize($app['redis']->get($value));
+	}
 
-    return new Symfony\Component\HttpFoundation\Response($app['twig']->render('index.htm',array('list'=>$list)));
+	return new Symfony\Component\HttpFoundation\Response($app['twig']->render('index.htm',array('list'=>$list)));
 });
 
 $app->post("/new", function(Silex\Application $app){
@@ -49,15 +35,15 @@ $app->post("/new", function(Silex\Application $app){
 
 		$parents = array();
 		$coid = Git2\Commit::create($repo,array(
-					"author" => $sig,
+					"author"    => $sig,
 					"committer" => $sig,
-					"message" => $description,
-					"tree" => $toid,
-					"parents" => array()
-					));
+					"message"   => $description,
+					"tree"      => $toid,
+					"parents"   => array()
+		));
 		$entity = new Kokuban\Entity($seed);
-                $app['redis']->set($seed,serialize($entity));
-                $app['redis']->lpush('kokuban.list',$seed);
+		$app['redis']->set($seed,serialize($entity));
+		$app['redis']->lpush('kokuban.list',$seed);
 		echo "{$seed}.git was successfully created";
 });
 
@@ -178,29 +164,29 @@ $app->match("/{repo}/{task}",function($repo,$task){
 	}
 )->assert('task','.+');
 $app->get("/{id}",function(Silex\Application $app){
-    $repo = new Git2\Repository(REPOSITORY_DIRS . $app['request']->get('id').".git");
-    $head = Git2\Reference::lookup($repo,"refs/heads/master");
-    $head = $head->resolve();
-    $walker = new Git2\Walker($repo);
-    $walker->push($head->getTarget());
-    $revs = array();
-    $i = 0;
-    foreach($walker as $entry){
-      if($i>20) break;
-      $revs[] = $entry;
-      if($i==0) $h = $entry;
-      $i++;
-    }
-    $tmp_tree = $h->getTree();
-    $tree = array();
-    foreach($tmp_tree as $t){
-      $tree[] = array(
-        "entry" => $t,
-        "object" => $repo->lookup($t->oid),
-      );
-    }
-    
-    return new Symfony\Component\HttpFoundation\Response($app['twig']->render('detail.htm',array("revisions"=>$revs,'id'=>$app['request']->get('id'),"tree"=>$tree)));
+	$repo = new Git2\Repository(REPOSITORY_DIRS . $app['request']->get('id').".git");
+	$head = Git2\Reference::lookup($repo,"refs/heads/master");
+	$head = $head->resolve();
+	$walker = new Git2\Walker($repo);
+	$walker->push($head->getTarget());
+	$revs = array();
+	$i = 0;
+	foreach($walker as $entry){
+	  if($i>20) break;
+	  $revs[] = $entry;
+	  if($i==0) $h = $entry;
+	  $i++;
+	}
+	$tmp_tree = $h->getTree();
+	$tree = array();
+	foreach($tmp_tree as $t){
+	  $tree[] = array(
+		"entry" => $t,
+		"object" => $repo->lookup($t->oid),
+	  );
+	}
+
+	return new Symfony\Component\HttpFoundation\Response($app['twig']->render('detail.htm',array("revisions"=>$revs,'id'=>$app['request']->get('id'),"tree"=>$tree)));
 })->assert('id','\d+');
 
 function gzBody($gzData){ 

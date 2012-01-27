@@ -1,49 +1,52 @@
 <html>
 <link rel="stylesheet" href="/assets/bootstrap.min.css">
 <link rel="stylesheet" href="/assets/bootstrap-responsive.css">
-			  <style type="text/css">
+<style type="text/css">
 body{
-position: relative;
-padding-top: 90px;
+    position: relative;
+    padding-top: 90px;
 }
 </style>
 <body>
-  <div class="navbar navbar-fixed">
-	<div class="navbar-inner">
-	  <div class="container">
-		<a class="brand" href="/">kokuban</a>
-	  </div>
-	</div>
-  </div>
-  <div class="fluid-container sidebar-right">
-  <div class="fluid-sidebar">
-    <ul class="nav list">
-      <li class="nav-header">revisions</li>
-      {% for commit in revisions %}<li><a href="/{{id}}/{{commit.getOid}}">{{commit.getOid()}}</a></li>{% endfor %}
-    </ul>
-  </div>
-  <div class="fluid-content">
-	<div class="overview">
-        <div>
-          <div>kokuban: {{id}}</div>
-          <div>clone: <input class="span4" type="text" value="http://localhost:8081/{{id}}.git" /></div>
+    <div class="navbar navbar-fixed">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="/">kokuban</a>
+            </div>
         </div>
-<form method="POST" class="well" action="/">
-  <div>
-{% for t in tree %}
-  description:
-  <input type="text" value="" name="description" class="span4" /><br />
-name: <input type="text" value="{{t.entry.name}}" name="name" class="span4" /><br />
-<textarea name="contents" class="span10" style="height:20em;">{{t.object.getContent}}</textarea>
+    </div>
 
+    <div class="fluid-container sidebar-right">
+        <div class="fluid-sidebar">
+        <ul class="nav list">
+            <li class="nav-header">revisions</li>
+             {% for commit in revisions %}<li><a href="/{{id}}/{{commit.getOid}}">{{commit.getOid()}}</a></li>{% endfor %}
+        </ul>
+    </div>
+
+    <div class="fluid-content">
+        <div class="overview">
+            <div>
+                <div>kokuban: {{id}}</div>
+                <div>clone: <input class="span4" type="text" value="http://localhost:8081/{{id}}.git" /></div>
+            </div>
+            <form method="POST" class="well" action="/">
+                <div>
+                {% for t in tree %}
+                description:
+                <input type="text" value="" name="description" class="span4" /><br />
+                name: <input type="text" value="{{t.entry.name}}" name="name" class="span4" /><br />
+                <textarea name="contents" class="span10" style="height:20em;">{{t.object.getContent}}</textarea>
+                </div>
+                {% endfor %}
+
+                <div class="form-actions">
+                    <button type="submit" class="btn primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
   </div>
-{% endfor %}
-			  <div class="form-actions">
-			  <button type="submit" class="btn primary">Update</button>
-			  </div>
-</form>
-	</div>
-  </div>
-  </div>
+
 </body>
 </html>
