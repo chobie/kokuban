@@ -16,8 +16,13 @@ script "install_kokuban" do
     then
       cd kokuban
       git pull
+      git submodule init
+      git submodule update
     else
       git clone https://github.com/chobie/kokuban.git
+      cd kokuban
+      git submodule init
+      git submodule update
     fi
   EOH
 end
