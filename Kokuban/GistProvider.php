@@ -98,7 +98,6 @@ class GistProvider implements \Silex\ControllerProviderInterface
 			foreach($walker as $entry){
 			  if($i>20) break;
 			  $revs[] = $entry;
-			  if($i==0) $h = $entry;
 			  $i++;
 			}
 
