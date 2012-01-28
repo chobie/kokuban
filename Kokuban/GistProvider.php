@@ -13,6 +13,17 @@ class GistProvider implements \Silex\ControllerProviderInterface
 		$app = $this->initialize($app);
 		$collection = new \Silex\ControllerCollection();
 
+		$collection->get("/", function(\Silex\Application $app){
+			$tmp = $app['redis']->lrange('kokuban.list',0,10);
+			$list = array();
+
+			foreach($tmp as $offset => $value) {
+			  $list[$value] = unserialize($app['redis']->get($value));
+			}
+
+			return new \Symfony\Component\HttpFoundation\Response($app['twig']->render('index.htm',array('list'=>$list)));
+		});
+
 		$collection->post("/new", function(\Silex\Application $app){
 				$description = $app['request']->get('description');
 				$name = $app['request']->get('name');
