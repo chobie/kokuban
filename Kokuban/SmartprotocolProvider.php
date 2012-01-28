@@ -15,12 +15,12 @@ class SmartprotocolProvider implements \Silex\ControllerProviderInterface
 
 		$collection->match("/{repo}/{task}",function($repo,$task){
 
-				$repository = new \Git2\Repository(REPOSITORY_DIRS . "{$repo}");
+				$repository = new \Git2\Repository(\REPOSITORY_DIRS . "{$repo}");
 
 				switch ($task) {
 					case "HEAD":
-						if (is_file(REPOSITORY_DIRS . "{$repo}/HEAD")) {
-							echo file_get_contents(REPOSITORY_DIRS . "{$repo}/HEAD");
+						if (is_file(\REPOSITORY_DIRS . "{$repo}/HEAD")) {
+							echo file_get_contents(\REPOSITORY_DIRS . "{$repo}/HEAD");
 						}
 						break;
 
@@ -34,7 +34,7 @@ class SmartprotocolProvider implements \Silex\ControllerProviderInterface
 						1 => array("pipe", "w"),
 						);
 
-						$p = proc_open("git-receive-pack --stateless-rpc " . REPOSITORY_DIRS . "{$repo}",$descriptorspec,$pipes);
+						$p = proc_open("git-receive-pack --stateless-rpc " . \REPOSITORY_DIRS . "{$repo}",$descriptorspec,$pipes);
 						if (is_resource($p)){
 							fwrite($pipes[0],$input);
 							fclose($pipes[0]);
@@ -58,7 +58,7 @@ class SmartprotocolProvider implements \Silex\ControllerProviderInterface
 							1 => array("pipe", "w"),
 						);
 
-						$p = proc_open("git-upload-pack --stateless-rpc " . REPOSITORY_DIRS . "{$repo}",$descriptorspec,$pipes);
+						$p = proc_open("git-upload-pack --stateless-rpc " . \REPOSITORY_DIRS . "{$repo}",$descriptorspec,$pipes);
 						if (is_resource($p)){
 							fwrite($pipes[0],$input);
 							fclose($pipes[0]);
@@ -83,7 +83,7 @@ class SmartprotocolProvider implements \Silex\ControllerProviderInterface
 								1 => array("pipe", "w"),
 							);
 
-							$p = proc_open("git-upload-pack --stateless-rpc --advertise-refs " . REPOSITORY_DIRS . "{$repo}",$descriptorspec,$pipes);
+							$p = proc_open("git-upload-pack --stateless-rpc --advertise-refs " . \REPOSITORY_DIRS . "{$repo}",$descriptorspec,$pipes);
 							if (is_resource($p)){
 								fwrite($pipes[0],$input);
 								fclose($pipes[0]);
@@ -106,7 +106,7 @@ class SmartprotocolProvider implements \Silex\ControllerProviderInterface
 								1 => array("pipe", "w"),
 							);
 
-							$p = proc_open("git-receive-pack --stateless-rpc --advertise-refs " . REPOSITORY_DIRS . "{$repo}",$descriptorspec,$pipes);
+							$p = proc_open("git-receive-pack --stateless-rpc --advertise-refs " . \REPOSITORY_DIRS . "{$repo}",$descriptorspec,$pipes);
 							if (is_resource($p)){
 								fwrite($pipes[0],$input);
 								fclose($pipes[0]);

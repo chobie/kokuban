@@ -21,7 +21,7 @@ class GistProvider implements \Silex\ControllerProviderInterface
 			  $list[$value] = unserialize($app['redis']->get($value));
 			}
 
-			return new \Symfony\Component\HttpFoundation\Response($app['twig']->render('index.htm',array('list'=>$list)));
+			return new \Symfony\Component\HttpFoundation\Response($app['twig']->render('index.htm',array('list'=>$list,'msg'=>"")));
 		});
 
 		$collection->post("/new", function(\Silex\Application $app){
@@ -30,7 +30,7 @@ class GistProvider implements \Silex\ControllerProviderInterface
 				$contents = $app['request']->get('contents');
 
 				$seed =  strtr(microtime(true),array("."=>""));
-				$repo = \Git2\Repository::init(REPOSITORY_DIRS . $seed . ".git");
+				$repo = \Git2\Repository::init(\REPOSITORY_DIRS . $seed . ".git");
 				$oid = $repo->write($contents, 3);
 
 				$builder = new \Git2\TreeBuilder();
@@ -56,11 +56,13 @@ class GistProvider implements \Silex\ControllerProviderInterface
 				$entity = new \Kokuban\Entity($seed);
 				$app['redis']->set($seed,serialize($entity));
 				$app['redis']->lpush('kokuban.list',$seed);
-				echo "{$seed}.git was successfully created";
+				$msg =  "{$seed}.git was successfully created";
+
+				return new \Symfony\Component\HttpFoundation\Response($app['twig']->render('index.htm',array('list'=>$list,"msg"=>$msg)));
 		});
 
 		$collection->get("/{id}",function(\Silex\Application $app){
-			$repo = new \Git2\Repository(REPOSITORY_DIRS . $app['request']->get('id').".git");
+			$repo = new \Git2\Repository(\REPOSITORY_DIRS . $app['request']->get('id').".git");
 			$head = \Git2\Reference::lookup($repo,"refs/heads/master");
 			$head = $head->resolve();
 			$walker = new \Git2\Walker($repo);
@@ -74,6 +76,34 @@ class GistProvider implements \Silex\ControllerProviderInterface
 			  $i++;
 			}
 			$tmp_tree = $h->getTree();
+			$tree = array();
+			foreach($tmp_tree as $t){
+			  $tree[] = array(
+				"entry" => $t,
+				"object" => $repo->lookup($t->oid),
+			  );
+			}
+
+			return new \Symfony\Component\HttpFoundation\Response($app['twig']->render('detail.htm',array("revisions"=>$revs,'id'=>$app['request']->get('id'),"tree"=>$tree)));
+		})->assert('id','\d+');
+
+		$collection->get("/{id}/{commit_id}",function(\Silex\Application $app){
+			$repo = new \Git2\Repository(\REPOSITORY_DIRS . $app['request']->get('id').".git");
+			$head = \Git2\Reference::lookup($repo,"refs/heads/master");
+			$head = $head->resolve();
+			$walker = new \Git2\Walker($repo);
+			$walker->push($head->getTarget());
+			$revs = array();
+			$i = 0;
+			foreach($walker as $entry){
+			  if($i>20) break;
+			  $revs[] = $entry;
+			  if($i==0) $h = $entry;
+			  $i++;
+			}
+
+			$commit = $repo->lookup($app['request']->get('commit_id'));
+			$tmp_tree = $commit->getTree();
 			$tree = array();
 			foreach($tmp_tree as $t){
 			  $tree[] = array(

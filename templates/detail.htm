@@ -30,20 +30,13 @@ body{
                 <div>kokuban: {{id}}</div>
                 <div>clone: <input class="span4" type="text" value="http://localhost:8081/{{id}}.git" /></div>
             </div>
-            <form method="POST" class="well" action="/">
                 <div>
+                <div>description:</div>
                 {% for t in tree %}
-                description:
-                <input type="text" value="" name="description" class="span4" /><br />
-                name: <input type="text" value="{{t.entry.name}}" name="name" class="span4" /><br />
-                <textarea name="contents" class="span10" style="height:20em;">{{t.object.getContent}}</textarea>
+                <div>name: {{t.entry.name}}</div>
+                <pre>{{t.object.getContent}}</pre>
                 </div>
                 {% endfor %}
-
-                <div class="form-actions">
-                    <button type="submit" class="btn primary">Update</button>
-                </div>
-            </form>
         </div>
     </div>
   </div>
