@@ -51,7 +51,7 @@ class GistProvider implements \Silex\ControllerProviderInterface
 							"committer" => $sig,
 							"message"   => $description,
 							"tree"      => $toid,
-							"parents"   => array()
+							"parents"   => $parents
 				));
 				$entity = new \Kokuban\Entity($seed);
 				$app['redis']->set($seed,serialize($entity));
